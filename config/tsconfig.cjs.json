@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "CommonJS",
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "declaration": false,
+    "module": "CommonJS",
+    "outDir": "../dist/cjs"
+  },
+  "include": ["../src"],
+  "exclude": ["../src/**/__tests__"]
+}
