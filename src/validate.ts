@@ -24,6 +24,30 @@ export function multiple<T>(map: Validator<T>): Validator<T[]> {
   return result;
 }
 
+export function enumerable<T extends string[]>(
+  possible: T,
+): Validator<T[number]> {
+  if (possible.length === 0) {
+    throw new Error("Enum must have at least 1 possible value.");
+  }
+  const result: Validator<T[number]> = (values) => {
+    const value = single(values);
+    if (possible.includes(value)) {
+      return value;
+    }
+    throw new Error(
+      `Value "${value}" is not a part of enum (${possible
+        .map((v) => JSON.stringify(v))
+        .join(" | ")})`,
+    );
+  };
+  Object.defineProperty(result, "name", {
+    writable: false,
+    value: `(${possible.map((v) => JSON.stringify(v)).join(" | ")})`,
+  });
+  return result;
+}
+
 export function optional<T>(validator: Validator<T>): Validator<T | undefined> {
   const result: Validator<T | undefined> = (values) => {
     if (values.length === 0) {
@@ -85,7 +109,7 @@ const nonFloat = /[^0-9\.]/;
 export function integer(values: string[]): number {
   const text = single(values);
   if (text.match(nonNumber)) {
-    throw new Error(`"${text}" is not an integer.`);
+    throw new Error(`${JSON.stringify(text)} is not an integer.`);
   }
   return parseInt(text);
 }
@@ -93,7 +117,7 @@ export function integer(values: string[]): number {
 export function float(values: string[]): number {
   const text = single(values);
   if (text.match(nonFloat)) {
-    throw new Error(`"${text}" is not a float.`);
+    throw new Error(`${JSON.stringify(text)} is not a float.`);
   }
   return parseFloat(text);
 }

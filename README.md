@@ -18,7 +18,13 @@ const flags = new FlagSet()
 
 const portRef = flags.flag(defaultValue(integer, 3000), "port", "Specify what port to host on.")
 const verboseRef = flags.flag(boolean, "verbose", "Enable verbose logging.")
-flags.parse(process.argv.slice(2))
+try {
+  flags.parse(process.argv.slice(2))
+} catch (e) {
+  console.log(flags.help());
+  console.error((e as Error).message);
+  process.exit(1);
+}
 
 console.log(portRef.value, verboseRef.value)
 ```
@@ -28,7 +34,7 @@ console.log(portRef.value, verboseRef.value)
 ```typescript
 import FlagSet, { integer, string, boolean, defaultValue, single } from "jsflags"
 
-const { flag, parse } = new FlagSet((values) => {
+const { flag, parse, help } = new FlagSet((values) => {
   return single(values)
 })
 
@@ -37,7 +43,14 @@ const nameRef = flag(string, "name", "Specify the name of the application.")
 const verboseRef = flag(boolean, "verbose", "Enable verbose logging. (default: false)")
 const multipleRef = flag(multiple)
 
-const [positional] = parse(process.argv.slice(2))
+let positional: string
+try {
+  positional = flags.parse(process.argv.slice(2))[0]
+} catch (e) {
+  console.log(help());
+  console.error((e as Error).message);
+  process.exit(1);
+}
 
 console.log(portRef.value, nameRef.value, verboseRef.value, positional)
 // $ application --port 200 --name "some fancy name" positional

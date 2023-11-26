@@ -212,7 +212,7 @@ export class FlagSet<P = void> {
     if (remainder.length > 0) {
       throw new Error(
         `Got additional positional arguments [${remainder
-          .map((r) => `"${r}"`)
+          .map((r) => JSON.stringify(r))
           .join(", ")}]`,
       );
     }
