@@ -30,11 +30,7 @@ describe("flags", () => {
     "name",
     "specify the name for the application",
   );
-  const verboseRef = flags.flag(
-    defaultValue(boolean, false),
-    "verbose",
-    "enable verbose logging",
-  );
+  const verboseRef = flags.flag(boolean, "verbose", "enable verbose logging");
   const thresholdRef = flags.flag(
     optional(float),
     "threshold",
@@ -186,5 +182,35 @@ describe("flags", () => {
         '-name "this is a name"',
       ]),
     ).toThrow(/additional positional/i);
+  });
+
+  describe("single values", () => {
+    test("single string", () => {
+      const flags = new FlagSet();
+      const nameRef = flags.flag(string, "name", "");
+
+      flags.parse(["--name", "name"]);
+      expect(nameRef).toEqual({ value: "name" });
+      flags.parse(["--name=name"]);
+      expect(nameRef).toEqual({ value: "name" });
+      flags.parse(["--name name"]);
+      expect(nameRef).toEqual({ value: "name" });
+      flags.parse(["-name=name"]);
+      expect(nameRef).toEqual({ value: "name" });
+      flags.parse(["-name name"]);
+      expect(nameRef).toEqual({ value: "name" });
+      flags.parse(["-name", "name"]);
+      expect(nameRef).toEqual({ value: "name" });
+    });
+
+    test("single boolean", () => {
+      const flags = new FlagSet();
+      const destroyRef = flags.flag(boolean, "destroy", "");
+
+      flags.parse(["--destroy"]);
+      expect(destroyRef.value).toBe(true);
+      flags.parse(["-destroy"]);
+      expect(destroyRef.value).toBe(true);
+    });
   });
 });

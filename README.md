@@ -16,8 +16,8 @@ import FlagSet, { integer, boolean, defaultValue } from "jsflags"
 
 const flags = new FlagSet()
 
-const portRef = flags.flag(integer, "port", "Specify what port to host on.")
-const verboseRef = flags.flag(defaultValue(boolean, false), "verbose", "Enable verbose logging.")
+const portRef = flags.flag(defaultValue(integer, 3000), "port", "Specify what port to host on.")
+const verboseRef = flags.flag(boolean, "verbose", "Enable verbose logging.")
 flags.parse(process.argv.slice(2))
 
 console.log(portRef.value, verboseRef.value)
@@ -34,7 +34,7 @@ const { flag, parse } = new FlagSet((values) => {
 
 const portRef = flag(integer, "port", "Specify the port to host on.")
 const nameRef = flag(string, "name", "Specify the name of the application.")
-const verboseRef = flag(defaultValue(boolean, false), "verbose", "Enable verbose logging. (default: false)")
+const verboseRef = flag(boolean, "verbose", "Enable verbose logging. (default: false)")
 const multipleRef = flag(multiple)
 
 const [positional] = parse(process.argv.slice(2))

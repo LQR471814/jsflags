@@ -123,6 +123,7 @@ export class FlagSet<P = void> {
               state = ArgParseState.FLAG_INITIAL;
               if (acceptingValue) {
                 acceptingValue.values.push("");
+                acceptingValue = undefined;
               }
               break;
             }
@@ -179,6 +180,10 @@ export class FlagSet<P = void> {
         continue;
       }
       flag.values.push(value);
+    }
+
+    if (acceptingValue) {
+      acceptingValue.values.push("");
     }
 
     for (const { flag, values } of flagValues) {
