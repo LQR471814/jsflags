@@ -1,5 +1,6 @@
 import { FlagSet, dequote } from "../flags";
 import {
+  url,
   boolean,
   defaultValue,
   float,
@@ -7,7 +8,6 @@ import {
   multiple,
   optional,
   string,
-  url,
 } from "../validate";
 
 test("dequote", () => {
