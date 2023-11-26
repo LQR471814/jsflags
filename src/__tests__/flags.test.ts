@@ -1,4 +1,4 @@
-import { FlagSet, dequote } from "..";
+import { FlagSet, dequote } from "../flags";
 import {
   url,
   boolean,

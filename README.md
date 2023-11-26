@@ -12,8 +12,7 @@
 ### Basic Usage
 
 ```typescript
-import { FlagSet } from "jsflags"
-import { integer, boolean, defaultValue } from "jsflags/validate"
+import FlagSet, { integer, boolean, defaultValue } from "jsflags"
 
 const flags = new FlagSet()
 
@@ -27,8 +26,7 @@ console.log(portRef.value, verboseRef.value)
 ### Full Usage
 
 ```typescript
-import { FlagSet } from "jsflags"
-import { integer, string, boolean, defaultValue, single } from "jsflags/validate"
+import FlagSet, { integer, string, boolean, defaultValue, single } from "jsflags"
 
 const { flag, parse } = new FlagSet((values) => {
   return single(values)
