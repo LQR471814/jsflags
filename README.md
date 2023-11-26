@@ -18,7 +18,7 @@ import { integer, boolean, defaultValue } from "jsflags/validate"
 const flags = new FlagSet()
 
 const portRef = flags.flag(integer, "port", "Specify what port to host on.")
-const verboseRef = flags.flag(boolean, "verbose", "Enable verbose logging.")
+const verboseRef = flags.flag(defaultValue(boolean, false), "verbose", "Enable verbose logging.")
 flags.parse()
 
 console.log(portRef.value, verboseRef.value)
