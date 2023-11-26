@@ -1,4 +1,4 @@
-import { FlagSet, dequote } from "../flags";
+import { FlagSet, dequote } from "..";
 import {
   url,
   boolean,
@@ -18,7 +18,7 @@ test("dequote", () => {
 });
 
 describe("flags", () => {
-  const flags = new FlagSet();
+  const flags = new FlagSet((values) => values);
 
   const portRef = flags.flag(
     integer,
@@ -94,37 +94,31 @@ describe("flags", () => {
     expect(verboseRef).toEqual({ value: false });
     expect(thresholdRef).toEqual({ value: undefined });
 
-    let positional = flags.parse(
-      [
-        "--port",
-        "3123",
-        "--verbose",
-        "-name",
-        "a-random-name",
-        "positional 1",
-        "positional 2",
-      ],
-      (values) => values,
-    );
+    let positional = flags.parse([
+      "--port",
+      "3123",
+      "--verbose",
+      "-name",
+      "a-random-name",
+      "positional 1",
+      "positional 2",
+    ]);
     expect(portRef).toEqual({ value: 3123 });
     expect(verboseRef).toEqual({ value: true });
     expect(nameRef).toEqual({ value: "a-random-name" });
     expect(positional).toEqual(["positional 1", "positional 2"]);
 
-    positional = flags.parse(
-      [
-        "positional 1",
-        "--port",
-        "3123",
-        "positional 2",
-        "--verbose",
-        "-name",
-        '"--name"',
-        '--pageUrl="https://google.com"',
-        "--pageUrl https://wikipedia.org",
-      ],
-      (values) => values,
-    );
+    positional = flags.parse([
+      "positional 1",
+      "--port",
+      "3123",
+      "positional 2",
+      "--verbose",
+      "-name",
+      '"--name"',
+      '--pageUrl="https://google.com"',
+      "--pageUrl https://wikipedia.org",
+    ]);
     expect(portRef).toEqual({ value: 3123 });
     expect(verboseRef).toEqual({ value: true });
     expect(nameRef).toEqual({ value: "--name" });
@@ -180,8 +174,12 @@ describe("flags", () => {
       ]),
     ).toThrow(/unknown flag/i);
 
+    const defaultFlagSet = new FlagSet();
+    defaultFlagSet.flag(integer, "port", "");
+    defaultFlagSet.flag(string, "name", "");
+
     expect(() =>
-      flags.parse([
+      defaultFlagSet.parse([
         "positional argument",
         "-port",
         "3200",

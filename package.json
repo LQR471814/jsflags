@@ -1,6 +1,6 @@
 {
   "name": "jsflags",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "An extremely simple yet flexible JavaScript library for parsing command-line flags, inspired by the golang \"flags\" library.",
   "files": [
     "./dist/**"
@@ -23,6 +23,7 @@
     }
   },
   "scripts": {
+    "lint": "biome check . --apply-unsafe",
     "prepare": "biome check . --apply-unsafe",
     "build": "tsup",
     "test": "jest"

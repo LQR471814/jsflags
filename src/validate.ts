@@ -9,7 +9,7 @@ export function single(values: string[]): string {
 
 export function multiple<T>(map: Validator<T>): Validator<T[]> {
   const container = new Array<string>(1);
-  return (values) => {
+  const result: Validator<T[]> = (values) => {
     const results = new Array<T>(values.length);
     for (let i = 0; i < values.length; i++) {
       container[0] = values[i];
@@ -17,33 +17,52 @@ export function multiple<T>(map: Validator<T>): Validator<T[]> {
     }
     return results;
   };
+  Object.defineProperty(result, "name", {
+    writable: false,
+    value: `${map.name}[]`,
+  });
+  return result;
 }
 
 export function optional<T>(validator: Validator<T>): Validator<T | undefined> {
-  return (values) => {
+  const result: Validator<T | undefined> = (values) => {
     if (values.length === 0) {
       return;
     }
     return validator(values);
   };
+  Object.defineProperty(result, "name", {
+    writable: false,
+    value: `${validator.name} (optional)`,
+  });
+  return result;
 }
 
 export function defaultValue<T>(
   validator: Validator<T>,
   defaultValue: T,
 ): Validator<T> {
-  return (values) => {
+  const result: Validator<T> = (values) => {
     if (values.length === 0) {
       return defaultValue;
     }
     return validator(values);
   };
+  Object.defineProperty(result, "name", {
+    writable: false,
+    value: `${validator.name} (default: ${defaultValue})`,
+  });
+  return result;
 }
 
 /**
  * Alias for `single()`.
  */
-const string = single;
+const string = single.bind(undefined);
+Object.defineProperty(string, "name", {
+  writable: false,
+  value: "string",
+});
 
 export { string };
 

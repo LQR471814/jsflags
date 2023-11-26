@@ -12,24 +12,36 @@
 ### Usage
 
 ```typescript
-import { flag, parseFlags, integer, string, boolean, defaultValue } from "jsflags"
+import { FlagSet } from "jsflags"
+import { integer, string, boolean, defaultValue, single } from "jsflags/validate"
+
+const { flag, parse } = new FlagSet((values) => {
+  return single(values)
+})
 
 const portRef = flag(integer, "port", "Specify the port to host on.")
 const nameRef = flag(string, "name", "Specify the name of the application.")
-const verboseRef = flag(defaultValue(boolean, false), "verbose", "Enable verbose logging.")
+const verboseRef = flag(defaultValue(boolean, false), "verbose", "Enable verbose logging. (default: false)")
 const multipleRef = flag(multiple)
 
-parseFlags(process.argv.slice(2))
+const [positional] = parse(process.argv.slice(2))
 
-console.log(portRef.value, nameRef.value, verboseRef.value)
-
-// $ application --port 200 --name "some fancy name"
+console.log(portRef.value, nameRef.value, verboseRef.value, positional)
+// $ application --port 200 --name "some fancy name" positional
+// 200 "some fancy name" false "positional"
 // 
-// 200 "some fancy name" false
+// $ application --port 4200 --name "some fancy name" --verbose arg
+// 4200 "some fancy name" true "arg"
 
-// $ application --port 4200 --name "some fancy name" --verbose
-// 
-// 4200 "some fancy name" true
+console.log(help())
+// Usage:
+//   	Positionals:	single
+//
+//   	-port	integer	Specify the port to host on.
+//
+//   	-name	string	Specify the name of the application.
+//
+//   	-verbose	boolean (default: false)	Enable verbose logging. (default: false)
 ```
 
 - Each flag returns a "reference", an object `{ value: ... }` whose property `value` is set to the value of the flag.
@@ -49,6 +61,16 @@ The following formats are accepted for arguments:
 | `--flag value` | `["value"]` |
 | `--flag=value` | `["value"]` |
 | `--flag=v1 --flag v2 --flag` | `["v1", "v2", ""]` |
+
+If for some reason you don't want to use the global object that keeps track of flags, you can create your own using the `FlagSet` constructor.
+
+```typescript
+import { FlagSet } from "jsflags/flags"
+
+const flags = new FlagSet()
+flags.flag(...)
+flags.parse(...)
+```
 
 ### Custom validation and array values
 
