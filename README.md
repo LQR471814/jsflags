@@ -9,7 +9,22 @@
 - TypeScript and JavaScript support.
 - CJS and ESM support.
 
-### Usage
+### Basic Usage
+
+```typescript
+import { FlagSet } from "jsflags"
+import { integer, boolean, defaultValue } from "jsflags/validate"
+
+const flags = new FlagSet()
+
+const portRef = flags.flag(integer, "port", "Specify what port to host on.")
+const verboseRef = flags.flag(boolean, "verbose", "Enable verbose logging.")
+flags.parse()
+
+console.log(portRef.value, verboseRef.value)
+```
+
+### Full Usage
 
 ```typescript
 import { FlagSet } from "jsflags"
