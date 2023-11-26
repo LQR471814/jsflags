@@ -24,7 +24,7 @@ export function multiple<T>(map: Validator<T>): Validator<T[]> {
   return result;
 }
 
-export function enumerable<T extends [string, ...string[]]>(
+export function enumerable<T extends readonly string[]>(
   possible: T,
 ): Validator<T[number]> {
   if (possible.length === 0) {

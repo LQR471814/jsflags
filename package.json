@@ -1,6 +1,6 @@
 {
   "name": "jsflags",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "An extremely simple yet flexible JavaScript library for parsing command-line flags, inspired by the golang \"flags\" library.",
   "files": ["./dist/**"],
   "main": "./dist/index.js",
