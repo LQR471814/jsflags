@@ -19,7 +19,7 @@ const flags = new FlagSet()
 
 const portRef = flags.flag(integer, "port", "Specify what port to host on.")
 const verboseRef = flags.flag(defaultValue(boolean, false), "verbose", "Enable verbose logging.")
-flags.parse()
+flags.parse(process.argv.slice(2))
 
 console.log(portRef.value, verboseRef.value)
 ```
@@ -76,16 +76,6 @@ The following formats are accepted for arguments:
 | `--flag value` | `["value"]` |
 | `--flag=value` | `["value"]` |
 | `--flag=v1 --flag v2 --flag` | `["v1", "v2", ""]` |
-
-If for some reason you don't want to use the global object that keeps track of flags, you can create your own using the `FlagSet` constructor.
-
-```typescript
-import { FlagSet } from "jsflags/flags"
-
-const flags = new FlagSet()
-flags.flag(...)
-flags.parse(...)
-```
 
 ### Custom validation and array values
 
