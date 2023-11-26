@@ -67,15 +67,14 @@ This means you can pass in your own validators to validate a custom type.
 
 ```typescript
 const jsonRef = flag((values) => JSON.parse(single(values)), "json", "")
-parseArgs(process.argv.slice(2)) // $ application --json {"json": [1, "oh no", 3]}
+parseFlags(process.argv.slice(2)) // $ application --json {"json": [1, "oh no", 3]}
 console.log(jsonRef.value) // {json: [1, "oh no", 3]}
 ```
 
 If you want a list of typed values. `multiple(validator)` returns a validator that maps a given validator over each element in the `values` passed in, it then returns an array of the values returned.
 
-
 ```typescript
 const portRef = flag(multiple(integer), "port", "")
-parseArgs(process.argv.slice(2)) // $ application --port 323 --port=424
+parseFlags(process.argv.slice(2)) // $ application --port 323 --port=424
 console.log(portRef.value) // [323, 424]
 ```
