@@ -1,4 +1,4 @@
-import { FlagSet, Flag, Ref, dequote } from "./flags";
+import { Flag, FlagSet, Ref, dequote } from "./flags";
 
 export default FlagSet;
 export type { Flag, Ref };

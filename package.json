@@ -1,23 +1,25 @@
 {
   "name": "jsflags",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "An extremely simple yet flexible JavaScript library for parsing command-line flags, inspired by the golang \"flags\" library.",
-  "files": [
-    "./dist/**"
-  ],
+  "files": ["./dist/**"],
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
   "scripts": {
     "lint": "biome check . --apply-unsafe",
     "prepare": "biome check . --apply-unsafe",
     "build": "tsup",
     "test": "jest"
   },
-  "keywords": [
-    "flags",
-    "cli"
-  ],
+  "keywords": ["flags", "cli"],
   "author": "LQR471814",
   "license": "MIT",
   "devDependencies": {
