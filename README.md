@@ -13,19 +13,13 @@
 
 ```typescript
 import FlagSet, { integer, boolean, defaultValue } from "jsflags"
+import { parseNodejs } from "jsflags/node"
 
 const flags = new FlagSet()
-
 const portRef = flags.flag(defaultValue(integer, 3000), "port", "Specify what port to host on.")
 const verboseRef = flags.flag(boolean, "verbose", "Enable verbose logging.")
-try {
-  flags.parse(process.argv.slice(2))
-} catch (e) {
-  console.log(flags.help());
-  console.error((e as Error).message);
-  process.exit(1);
-}
 
+parseNodejs(flags)
 console.log(portRef.value, verboseRef.value)
 ```
 
@@ -33,25 +27,18 @@ console.log(portRef.value, verboseRef.value)
 
 ```typescript
 import FlagSet, { integer, string, boolean, defaultValue, single } from "jsflags"
+import { parseNodejs } from "jsflags/node"
 
-const { flag, parse, help } = new FlagSet((values) => {
+const flags = new FlagSet((values) => {
   return single(values)
 })
 
-const portRef = flag(integer, "port", "Specify the port to host on.")
-const nameRef = flag(string, "name", "Specify the name of the application.")
-const verboseRef = flag(boolean, "verbose", "Enable verbose logging. (default: false)")
-const multipleRef = flag(multiple)
+const portRef = flags.flag(integer, "port", "Specify the port to host on.")
+const nameRef = flags.flag(string, "name", "Specify the name of the application.")
+const verboseRef = flags.flag(boolean, "verbose", "Enable verbose logging.")
+const multipleRef = flags.flag(multiple)
 
-let positional: string
-try {
-  positional = flags.parse(process.argv.slice(2))[0]
-} catch (e) {
-  console.log(help());
-  console.error((e as Error).message);
-  process.exit(1);
-}
-
+const positional = parseNodejs(flags)
 console.log(portRef.value, nameRef.value, verboseRef.value, positional)
 // $ application --port 200 --name "some fancy name" positional
 // 200 "some fancy name" false "positional"
@@ -59,7 +46,7 @@ console.log(portRef.value, nameRef.value, verboseRef.value, positional)
 // $ application --port 4200 --name "some fancy name" --verbose arg
 // 4200 "some fancy name" true "arg"
 
-console.log(help())
+console.log(flags.help())
 // Usage:
 //   	Positionals:	single
 //
@@ -67,7 +54,7 @@ console.log(help())
 //
 //   	-name	string	Specify the name of the application.
 //
-//   	-verbose	boolean (default: false)	Enable verbose logging. (default: false)
+//   	-verbose	boolean (default: false)	Enable verbose logging.
 ```
 
 - Each flag returns a "reference", an object `{ value: ... }` whose property `value` is set to the value of the flag.
@@ -104,10 +91,15 @@ The `single` validator throws an error if there is not exactly one value passed 
 This means you can pass in your own validators to validate a custom type.
 
 ```typescript
-const jsonRef = flag((values) => JSON.parse(single(values)), "json", "")
+function json(values: string[]) {
+  return JSON.parse(single(values))
+}
+const jsonRef = flag(json, "json", "...")
 parseFlags(process.argv.slice(2)) // $ application --json {"json": [1, "oh no", 3]}
 console.log(jsonRef.value) // {json: [1, "oh no", 3]}
 ```
+
+The type of a value in the help message is simply the [name](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name) of the validator function. In the example above, it would show up like `-json  json ...`.
 
 If you want a list of typed values. `multiple(validator)` returns a validator that maps a given validator over each element in the `values` passed in, it then returns an array of the values returned.
 
