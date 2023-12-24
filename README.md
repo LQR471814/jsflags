@@ -75,6 +75,33 @@ The following formats are accepted for arguments:
 | `--flag=value` | `["value"]` |
 | `--flag=v1 --flag v2 --flag` | `["v1", "v2", ""]` |
 
+### Common Patterns
+
+If you want subcommands and a whole routing system like the following.
+
+```
+ts-node cli command --flag=one
+ts-node cli command subcommand --other-flag=2
+```
+
+You should break your script up into multiple files, one for each command, something like the following.
+
+```
+src/
+  subcommand/
+    index.ts
+  subcommand2/
+    index.ts
+  index.ts
+```
+
+Each script can have their own `FlagSet`, and can be invoked like the following.
+
+```
+ts-node src/subcommand/index.ts --flag=one
+ts-node src/index.ts --other-flag=one
+```
+
 ### Custom validation and array values
 
 All flags possess a "validator" to verify and transform the raw string values of the flag into the final value in the reference.
